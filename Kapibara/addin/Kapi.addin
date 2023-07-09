@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>Kapibara</Name>
+		<Assembly>Kapibara.dll</Assembly>
+		<ClientId>2a324547-a455-467f-9aa4-54c2dbfa8522</ClientId>
+		<FullClassName>Kapibara.Application</FullClassName>
+		<VendorId>Aleksandr Fomenko</VendorId>
+		<VendorDescription>Aleksandr Fomenko</VendorDescription>
+	</AddIn>
+</RevitAddIns>
