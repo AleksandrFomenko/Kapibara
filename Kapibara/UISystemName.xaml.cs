@@ -194,6 +194,7 @@ namespace Kapibara
                     if (elem.LookupParameter(ParameterName) != null && !elem.LookupParameter(ParameterName).IsReadOnly)
                     {
                        cm.setParameterValueByNameToElement(elem,ParameterName,elem.get_Parameter(bp).AsString());
+                       elem.LookupParameter("тест")
                     }
                     
                     foreach (Element subelem in cm.GetSubComponents(elem))
