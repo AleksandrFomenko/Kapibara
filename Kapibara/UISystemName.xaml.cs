@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -104,25 +104,6 @@ namespace Kapibara
                 {
                     BlockUserParameters.SelectedItem = "ААА_Имя системы";
                 }
-            }
-        }
-        private void BlockUserParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (BlockUserParameters.SelectedItem != null)
-            {
-                string selectedParameterName = BlockUserParameters.SelectedItem.ToString();
-                ParameterName = selectedParameterName;
-            }
-        }
-        private void BlockElements_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string selectedElement = BlockElements.SelectedItem.ToString();
-            if (selectedElement == "Трубопроводам")
-            {
-                duct = false;
-            } else if (selectedElement == "Воздуховодам")
-            {
-                duct = true;
             }
         }
         private void BlockUserParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
