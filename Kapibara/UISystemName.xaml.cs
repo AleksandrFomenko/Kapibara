@@ -195,6 +195,7 @@ namespace Kapibara
                     {
                        cm.setParameterValueByNameToElement(elem,ParameterName,elem.get_Parameter(bp).AsString());
                     }
+                    elem.LookupParameter(ParameterName);
                     
                     foreach (Element subelem in cm.GetSubComponents(elem))
                     {
