@@ -111,7 +111,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Kapibara\kapib_floor.jpg" />
+    <Content Include="Kapibara\kapib_length.png" />
+    <Content Include="Kapibara\kapib_write.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Kapibara\kapib.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
