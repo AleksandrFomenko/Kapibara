@@ -38,9 +38,10 @@ namespace Kapibara
 
             RibbonPanel panel = application.CreateRibbonPanel("Kapibarja","MEP общие");
             RibbonPanel panel_two = application.CreateRibbonPanel("Kapibarja", "Вентиляция");
+            
             adWin.RibbonControl ribbon = adWin.ComponentManager.Ribbon;
 
-            //фиолетовый
+            
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPurple = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 204, 255));
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPink = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 218, 221));
 
@@ -58,25 +59,43 @@ namespace Kapibara
                         panel1.CustomPanelTitleBarBackground = panelBackgroundBrushPink;
 
                     }
+                    if (panel1.Source.Title == "Вентиляция")
+                    {
+                        panel1.CustomPanelTitleBarBackground = panelBackgroundBrushPink;
+
+                    }
                 }
             }
 
 
             PushButtonData pbdOne = new PushButtonData("FirstButton", "Имя системы", assemblyPath, "Kapibara.SystemName");
-            PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина \n инженерных \n сетей", assemblyPath, "Kapibara.Length");
+            PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина  инженерных \n сетей", assemblyPath, "Kapibara.Length");
+            PushButtonData pbdThree = new PushButtonData("ThidButton", "Тётя Лена", assemblyPath, "Kapibara.WritingToParameter");
+            PushButtonData pbdTFour = new PushButtonData("FourthButton", "Этаж", assemblyPath, "Kapibara.Floor");
 
 
 
-            
+
             Uri uri = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib.png"));
+            Uri uri1 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_length.png"));
+            Uri uri2 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_write.png"));
+            Uri uri3 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_floor.png"));
             BitmapImage bm_first = new BitmapImage(uri);
+            BitmapImage bm_second = new BitmapImage(uri1);
+            BitmapImage bm_Third = new BitmapImage(uri2);
+            BitmapImage bm_fourth = new BitmapImage(uri3);
             pbdOne.LargeImage = bm_first;
+            pbdTwo.LargeImage = bm_second;
+            pbdThree.LargeImage = bm_Third;
+            pbdTFour.LargeImage = bm_fourth;
 
 
 
 
             panel.AddItem(pbdOne);
             panel.AddItem(pbdTwo);
+            panel.AddItem(pbdThree);
+            panel.AddItem(pbdTFour);
 
         
 

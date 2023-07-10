@@ -66,6 +66,7 @@ namespace Kapibara
             BlockSystemName.SelectedIndex = 0;
             BlockElements.Items.Add("Трубопроводам");
             BlockElements.Items.Add("Воздуховодам");
+            BlockElements.SelectedIndex = 0;
 
             FilteredElementCollector collector_duct = new FilteredElementCollector(Doc);
 
@@ -162,7 +163,6 @@ namespace Kapibara
         public void ExecuteTransactionSystemName()
         {
             CollectionMethods cm = new CollectionMethods();
-            // collector = new FilteredElementCollector(Doc);
             FilteredElementCollector collector;
            if (activeView)
             {
