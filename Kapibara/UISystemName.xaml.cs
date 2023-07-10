@@ -53,16 +53,12 @@ namespace Kapibara
             BuiltInCategory.OST_PlumbingFixtures,
             BuiltInCategory.OST_FlexPipeCurves
         };
-        FilteredElementCollector collector;
+       
         List<Element> elements = new List<Element>();
         string ParameterName;
         BuiltInParameter bp;
-
-
-
-
-
-
+        private bool duct;
+        private bool activeView;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             BlockSystemName.Items.Add("Имя системы");
@@ -129,30 +125,23 @@ namespace Kapibara
                 duct = true;
             }
         }
-
         private void BlockUserParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedParameterName = BlockUserParameters.SelectedItem.ToString();
-            ParameterName = selectedParameterName;
+            if (BlockUserParameters.SelectedItem != null)
+            {
+                string selectedParameterName = BlockUserParameters.SelectedItem.ToString();
+                ParameterName = selectedParameterName;
+            }
         }
         private void BlockElements_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string selectedElement = BlockElements.SelectedItem.ToString();
             if (selectedElement == "Трубопроводам")
             {
-                var catFilt = new ElementMulticategoryFilter(cats_pipes);
-                elements = (List<Element>)collector
-                    .WherePasses(catFilt)
-                    .WhereElementIsNotElementType()
-                    .ToElements();
-            }
-            if (selectedElement == "Воздуховодам")
+                duct = false;
+            } else if (selectedElement == "Воздуховодам")
             {
-                var catFilt = new ElementMulticategoryFilter(cats_duct);
-                elements = (List<Element>)collector.
-                    WherePasses(catFilt).
-                    WhereElementIsNotElementType().
-                    ToElements();
+                duct = true;
             }
         }
         private void BlockSystemName_Selection(object sender, SelectionChangedEventArgs e)
@@ -164,19 +153,16 @@ namespace Kapibara
             } else if (selectedElement == "Сокращение для системы")
             {
                 bp = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
-            } else if (selectedElement == "Тип системы")
-            {
-                bp = BuiltInParameter.RBS_DUCT_SYSTEM_TYPE_PARAM;
             }
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            collector = new FilteredElementCollector(Doc,Doc.ActiveView.Id);
+            activeView = true;
         }
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            collector = new FilteredElementCollector(Doc);
+            activeView = false;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -190,12 +176,35 @@ namespace Kapibara
             
             Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
             Close();
-
         }
 
         public void ExecuteTransactionSystemName()
         {
             CollectionMethods cm = new CollectionMethods();
+            // collector = new FilteredElementCollector(Doc);
+            FilteredElementCollector collector;
+           if (activeView)
+            {
+                collector = new FilteredElementCollector(Doc,Doc.ActiveView.Id);
+            } else
+            {
+                collector = new FilteredElementCollector(Doc);
+            }
+           if (duct)
+            {
+                var catFilt = new ElementMulticategoryFilter(cats_duct);
+                elements = (List<Element>)collector
+                    .WherePasses(catFilt)
+                    .WhereElementIsNotElementType()
+                    .ToElements();
+            } else
+            {
+                var catFilt = new ElementMulticategoryFilter(cats_pipes);
+                elements = (List<Element>)collector
+                    .WherePasses(catFilt)
+                    .WhereElementIsNotElementType()
+                    .ToElements();
+            }
 
             foreach (Element elem in elements)
             {
