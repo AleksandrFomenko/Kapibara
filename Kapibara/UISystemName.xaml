@@ -13,7 +13,7 @@
                 <GradientStop Color="White" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Border BorderBrush="#FF060606" BorderThickness="1" Height="40" VerticalAlignment="Top" Margin="10,10,10,0">
+        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,10,10,0">
             <Border.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -24,9 +24,9 @@
                     <GradientStop Color="#FFC8C8C8" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Label Content="Выбери системный параметр:" Height="40" VerticalAlignment="Center" HorizontalAlignment="Left" Width="378" FontSize="14" VerticalContentAlignment="Center" Margin="10,0,0,0"/>
+            <Label Content="Выбери системный параметр:" Height="30" VerticalAlignment="Center" HorizontalAlignment="Left" Width="378" FontSize="14" VerticalContentAlignment="Center" Margin="10,0,0,0"/>
         </Border>
-        <Border BorderBrush="#FF060606" BorderThickness="1" Height="40" VerticalAlignment="Top" Margin="10,110,10,0">
+        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,90,10,0">
             <Border.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -38,10 +38,13 @@
                     <GradientStop Color="#FF969696" Offset="0.5"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Label Content="Выбери пользовательский параметр:" FontSize="14" Height="40" VerticalAlignment="Center" Margin="10,0,9,0" VerticalContentAlignment="Center"/>
+            <Label Content="Выбери пользовательский параметр:" FontSize="14" Height="30" VerticalAlignment="Center" Margin="10,0,9,0" VerticalContentAlignment="Center"/>
         </Border>
-        <ComboBox Margin="10,60,10,0" VerticalAlignment="Top" Height="40" SelectionChanged="BlockSystemName_Selection" x:Name="BlockSystemName" FontSize="14" FontFamily="Times New Roman"/>
-        <ComboBox x:Name="BlockUserParameters" Margin="10,160,10,0" VerticalAlignment="Top" Height="40" FontSize="14" SelectionChanged="BlockUserParameters_SelectionChanged"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="124,260,0,0" VerticalAlignment="Top"/>
+        <ComboBox Margin="10,50,10,0" VerticalAlignment="Top" Height="30" SelectionChanged="BlockSystemName_Selection" x:Name="BlockSystemName" FontSize="14" FontFamily="Times New Roman"/>
+        <ComboBox x:Name="BlockUserParameters" Margin="10,130,10,0" VerticalAlignment="Top" Height="30" FontSize="14" SelectionChanged="BlockUserParameters_SelectionChanged"/>
+        <Button Content="Ок" Margin="160,300,160,0" VerticalAlignment="Top" Click="Button_Click" FontSize="14"/>
+        <ComboBox x:Name="BlockElements" Margin="10,177,10,0" VerticalAlignment="Top" Height="40" FontSize="14" SelectionChanged="BlockUserParameters_SelectionChanged"/>
+        <CheckBox Content="Взять элементы только с активного вида&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,250,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Width="354" Unchecked="CheckBox_UnChecked"/>
+        <TextBlock HorizontalAlignment="Left" Margin="23,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Background="#FFCECECE" FontSize="14" Width="244"><Run Language="ru-ru" Text="Категории"/><Run Text=", "/><Run Language="ru-ru" Text="относящиеся к"/></TextBlock>
     </Grid>
 </Window>

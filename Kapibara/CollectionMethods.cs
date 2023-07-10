@@ -39,5 +39,10 @@ namespace Kapibara
 
             }
         }
+
+        internal void setParameterValueByNameToElement()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
