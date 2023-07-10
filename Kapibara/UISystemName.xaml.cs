@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -68,7 +67,6 @@ namespace Kapibara
         {
             BlockSystemName.Items.Add("Имя системы");
             BlockSystemName.Items.Add("Сокращение для системы");
-            BlockSystemName.Items.Add("Тип системы");
             BlockSystemName.SelectedIndex = 0;
             BlockElements.Items.Add("Трубопроводам");
             BlockElements.Items.Add("Воздуховодам");
@@ -110,6 +108,25 @@ namespace Kapibara
                 {
                     BlockUserParameters.SelectedItem = "ААА_Имя системы";
                 }
+            }
+        }
+        private void BlockUserParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BlockUserParameters.SelectedItem != null)
+            {
+                string selectedParameterName = BlockUserParameters.SelectedItem.ToString();
+                ParameterName = selectedParameterName;
+            }
+        }
+        private void BlockElements_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string selectedElement = BlockElements.SelectedItem.ToString();
+            if (selectedElement == "Трубопроводам")
+            {
+                duct = false;
+            } else if (selectedElement == "Воздуховодам")
+            {
+                duct = true;
             }
         }
 

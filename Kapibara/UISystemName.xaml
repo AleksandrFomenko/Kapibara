@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kapibara"
              mc:Ignorable="d" 
-             Width="450" Height="350" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid Loaded="Window_Loaded" Height="340" VerticalAlignment="Top" ShowGridLines="True">
+             Width="441" Height="385" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid Loaded="Window_Loaded" ShowGridLines="True">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FFA5A2A2"/>
