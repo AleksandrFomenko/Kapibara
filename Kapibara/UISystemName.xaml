@@ -42,9 +42,9 @@
         </Border>
         <ComboBox Margin="10,50,10,0" VerticalAlignment="Top" Height="30" SelectionChanged="BlockSystemName_Selection" x:Name="BlockSystemName" FontSize="14" FontFamily="Times New Roman"/>
         <ComboBox x:Name="BlockUserParameters" Margin="10,130,10,0" VerticalAlignment="Top" Height="30" FontSize="14" SelectionChanged="BlockUserParameters_SelectionChanged"/>
-        <Button Content="Ок" Margin="160,300,160,0" VerticalAlignment="Top" Click="Button_Click" FontSize="14"/>
-        <ComboBox x:Name="BlockElements" Margin="10,177,10,0" VerticalAlignment="Top" Height="40" FontSize="14" SelectionChanged="BlockUserParameters_SelectionChanged"/>
-        <CheckBox Content="Взять элементы только с активного вида&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,250,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Width="354" Unchecked="CheckBox_UnChecked"/>
-        <TextBlock HorizontalAlignment="Left" Margin="23,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Background="#FFCECECE" FontSize="14" Width="244"><Run Language="ru-ru" Text="Категории"/><Run Text=", "/><Run Language="ru-ru" Text="относящиеся к"/></TextBlock>
+        <Button Content="Ок" Margin="0,301,0,0" Click="Button_Click" FontSize="14" Height="35" VerticalAlignment="Top" HorizontalAlignment="Center" Width="134"/>
+        <ComboBox x:Name="BlockElements" Margin="10,189,10,0" VerticalAlignment="Top" Height="40" FontSize="14" SelectionChanged="BlockElements_SelectionChanged"/>
+        <CheckBox Content="Взять элементы только с активного вида&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,250,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Width="354" Unchecked="CheckBox_Unchecked"/>
+        <TextBlock HorizontalAlignment="Left" Margin="16,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Background="#FFCECECE" FontSize="14" Width="244"><Run Language="ru-ru" Text="Категории"/><Run Text=", "/><Run Language="ru-ru" Text="относящиеся к"/></TextBlock>
     </Grid>
 </Window>
