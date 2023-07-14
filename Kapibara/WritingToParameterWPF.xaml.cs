@@ -32,5 +32,23 @@ namespace Kapibara
             
             this.Close();
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            string enteredText = textBox.Text;
+
+        }
+        private void Parameters_Selection(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+        public void ExecuteTransactionSystemName()
+        {
+
+
+
+
+        }
     }
 }
