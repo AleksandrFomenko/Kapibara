@@ -80,7 +80,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="test_task.cs" />
     <Compile Include="Floor.cs" />
+    <Compile Include="TestTask.xaml.cs">
+      <DependentUpon>TestTask.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WritingToParameterWPF.xaml.cs">
       <DependentUpon>WritingToParameterWPF.xaml</DependentUpon>
     </Compile>
@@ -98,6 +102,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="TestTask.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WritingToParameterWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -112,7 +120,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Kapibara\kapib_floor.jpg" />
+    <Content Include="Kapibara\kapib_floor.png" />
     <Content Include="Kapibara\kapib_length.png" />
     <Content Include="Kapibara\kapib_write.png" />
   </ItemGroup>
