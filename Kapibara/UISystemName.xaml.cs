@@ -53,7 +53,7 @@ namespace Kapibara
             BuiltInCategory.OST_PlumbingFixtures,
             BuiltInCategory.OST_FlexPipeCurves
         };
-       
+
         List<Element> elements = new List<Element>();
         string ParameterName;
         BuiltInParameter bp;
@@ -79,20 +79,30 @@ namespace Kapibara
             List<Element> elements_pipe = (List<Element>)collector_pipe
                 .OfCategory(BuiltInCategory.OST_PipeCurves)
                 .WhereElementIsNotElementType().ToElements();
-
-            List<Parameter> parameters_duct = elements_duct[0].Parameters
-                .Cast<Parameter>()
-                .Where(parameter => parameter.StorageType == StorageType.String && parameter.Id.IntegerValue > 0)
-                .Select(Parameter => Parameter)
-                .ToList();
-            List<Parameter> parameters_pipes = elements_pipe[0].Parameters
-                .Cast<Parameter>()
-                .Where(parameter => parameter.StorageType == StorageType.String && parameter.Id.IntegerValue > 0)
-                .Select(Parameter => Parameter)
-                .ToList();
             List<Parameter> allParameters = new List<Parameter>();
-            allParameters.AddRange(parameters_duct);
-            allParameters.AddRange(parameters_pipes);
+            if (elements_duct.Count != 0)
+            {
+                List<Parameter> parameters_duct = elements_duct[0].Parameters
+                .Cast<Parameter>()
+                .Where(parameter => parameter.StorageType == StorageType.String && parameter.Id.IntegerValue > 0)
+                .Select(Parameter => Parameter)
+                .ToList();
+                allParameters.AddRange(parameters_duct);
+            }
+            if (elements_pipe.Count != 0)
+            {
+
+                List<Parameter> parameters_pipes = elements_pipe[0].Parameters
+                .Cast<Parameter>()
+                .Where(parameter => parameter.StorageType == StorageType.String && parameter.Id.IntegerValue > 0)
+                .Select(Parameter => Parameter)
+                .ToList();
+                allParameters.AddRange(parameters_pipes);
+            }
+
+
+
+
 
             foreach (Parameter par in allParameters)
             {
@@ -121,7 +131,8 @@ namespace Kapibara
             if (selectedElement == "Трубопроводам")
             {
                 duct = false;
-            } else if (selectedElement == "Воздуховодам")
+            }
+            else if (selectedElement == "Воздуховодам")
             {
                 duct = true;
             }
@@ -132,7 +143,8 @@ namespace Kapibara
             if (selectedElement == "Имя системы")
             {
                 bp = BuiltInParameter.RBS_SYSTEM_NAME_PARAM;
-            } else if (selectedElement == "Сокращение для системы")
+            }
+            else if (selectedElement == "Сокращение для системы")
             {
                 bp = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
             }
@@ -155,7 +167,7 @@ namespace Kapibara
                 ExecuteTransactionSystemName();
                 t.Commit();
             }
-            
+
             Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
             Close();
         }
@@ -164,21 +176,23 @@ namespace Kapibara
         {
             CollectionMethods cm = new CollectionMethods();
             FilteredElementCollector collector;
-           if (activeView)
+            if (activeView)
             {
-                collector = new FilteredElementCollector(Doc,Doc.ActiveView.Id);
-            } else
+                collector = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
+            }
+            else
             {
                 collector = new FilteredElementCollector(Doc);
             }
-           if (duct)
+            if (duct)
             {
                 var catFilt = new ElementMulticategoryFilter(cats_duct);
                 elements = (List<Element>)collector
                     .WherePasses(catFilt)
                     .WhereElementIsNotElementType()
                     .ToElements();
-            } else
+            }
+            else
             {
                 var catFilt = new ElementMulticategoryFilter(cats_pipes);
                 elements = (List<Element>)collector
@@ -193,17 +207,21 @@ namespace Kapibara
                 {
                     if (elem.LookupParameter(ParameterName) != null && !elem.LookupParameter(ParameterName).IsReadOnly)
                     {
-                       cm.setParameterValueByNameToElement(elem,ParameterName,elem.get_Parameter(bp).AsString());
+                        cm.setParameterValueByNameToElement(elem, ParameterName, elem.get_Parameter(bp).AsString());
                     }
-                    
-                    
+
+
                     foreach (Element subelem in cm.GetSubComponents(elem))
                     {
                         cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsString());
+                        foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                        {
+                            cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsString());
+                        }
                     }
                 }
-            }    
-        } 
+            }
+        }
     }
 }
        

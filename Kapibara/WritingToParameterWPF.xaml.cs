@@ -41,9 +41,18 @@ namespace Kapibara
             while (iterator.MoveNext())
             {
                 Definition definition = iterator.Key as Definition;
-                if (definition != null && definition.ParameterType == ParameterType.Text)
+                if (definition != null)
                 {
-                    allParametersStr.Add(definition.Name);
+                    ParameterType paramType = definition.ParameterType;
+
+                    if (paramType == ParameterType.Text ||
+                        paramType == ParameterType.Integer ||
+                        paramType == ParameterType.Number) 
+                        
+                        
+                    {
+                        allParametersStr.Add(definition.Name);
+                    }
                 }
             }
 
@@ -66,6 +75,7 @@ namespace Kapibara
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ExecuteTransactionSystemName();
+            Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
             this.Close();
         }
 
@@ -88,20 +98,48 @@ namespace Kapibara
         {
             Transaction t = new Transaction(Doc);
             t.Start("Start");
-            List <Element> elem = new FilteredElementCollector(Doc,Doc.ActiveView.Id).WhereElementIsNotElementType().ToElements().ToList();
+            List<Element> elem = new FilteredElementCollector(Doc, Doc.ActiveView.Id).WhereElementIsNotElementType().ToElements().ToList();
+
             foreach (Element element in elem)
             {
                 if (element != null)
                 {
-                    if (element.LookupParameter(parName)!=null && !element.LookupParameter(parName).IsReadOnly)
+                    Parameter parameter = element.LookupParameter(parName);
+                    if (parameter != null && !parameter.IsReadOnly)
                     {
-                        element.LookupParameter(parName).Set(value);
+                        if (parameter.StorageType == StorageType.String)
+                        {
+                            parameter.Set(value);
+                        }
+                        else if (parameter.StorageType == StorageType.Double)
+                        {
+                            double numericValue;
+                            if (double.TryParse(value, out numericValue))
+                            {
+                                parameter.Set(numericValue);
+                            }
+                            else
+                            {
 
+                            }
+                        }
+                        else if (parameter.StorageType == StorageType.Integer) 
+                        {
+                            int intValue;
+                            if (int.TryParse(value, out intValue))
+                            {
+                                parameter.Set(intValue);
+                            }
+                            else
+                            {
+                               
+                            }
+                        }
                     }
-
                 }
             }
-            t.Commit();
+           
+         t.Commit();
         }
     }
 }

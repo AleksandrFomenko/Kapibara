@@ -38,12 +38,15 @@ namespace Kapibara
 
             RibbonPanel panel = application.CreateRibbonPanel("Kapibarja","MEP общие");
             RibbonPanel panel_two = application.CreateRibbonPanel("Kapibarja", "Вентиляция");
-            
+           
+
+
             adWin.RibbonControl ribbon = adWin.ComponentManager.Ribbon;
 
             
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPurple = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 204, 255));
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPink = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 218, 221));
+            System.Windows.Media.SolidColorBrush panelBackgroundBrushYellow = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 253, 208));
 
             foreach (adWin.RibbonTab tab in ribbon.Tabs)
             {
@@ -59,19 +62,16 @@ namespace Kapibara
                         panel1.CustomPanelTitleBarBackground = panelBackgroundBrushPink;
 
                     }
-                    if (panel1.Source.Title == "Вентиляция")
-                    {
-                        panel1.CustomPanelTitleBarBackground = panelBackgroundBrushPink;
-
-                    }
+                    
                 }
             }
 
 
             PushButtonData pbdOne = new PushButtonData("FirstButton", "Имя системы", assemblyPath, "Kapibara.SystemName");
-            PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина  инженерных \n сетей", assemblyPath, "Kapibara.Length");
+            PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина инженерных\nсетей", assemblyPath, "Kapibara.Length");
             PushButtonData pbdThree = new PushButtonData("ThidButton", "Тётя Лена", assemblyPath, "Kapibara.WritingToParameter");
             PushButtonData pbdTFour = new PushButtonData("FourthButton", "Этаж", assemblyPath, "Kapibara.Floor");
+           // PushButtonData pbdTFive = new PushButtonData("FivethhButton", "тестовое задание", assemblyPath, "Kapibara.test_task");
 
 
 
@@ -96,9 +96,7 @@ namespace Kapibara
             panel.AddItem(pbdTwo);
             panel.AddItem(pbdThree);
             panel.AddItem(pbdTFour);
-
-        
-
+           
             return Result.Succeeded;
          
         }
