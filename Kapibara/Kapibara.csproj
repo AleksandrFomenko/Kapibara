@@ -112,14 +112,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Kapibara\kapib.png" />
     <Content Include="Kapibara\kapib_floor.png" />
     <Content Include="Kapibara\kapib_length.png" />
     <Content Include="Kapibara\kapib_write.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Kapibara\kapib.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
