@@ -5,9 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kapibara"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="111,341,0,0" VerticalAlignment="Top"/>
-
+             d:DesignHeight="250" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="500">
+    <Grid Background="#FFCCCCCC">
+        <ComboBox x:Name="parametersComboBox" HorizontalAlignment="Right" Margin="0,110,30,0" VerticalAlignment="Top" Width="440" SelectionChanged="parametersComboBox_SelectionChanged"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False"><Run Language="ru-ru" Text="Выбор параметра"/></TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="0,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440" FontSize="14" Height="33" IsEnabled="False"><Run Text="Рекомендуется з"/><Run Text="апускать"/><Run Text=" только по видимым на виде уровням"/><Run Text="."/><LineBreak/><LineBreak/><Run/><LineBreak/><Run/><LineBreak/><Run/></TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" FontSize="18" TextAlignment="Center" IsEnabled="False"><Run Language="ru-ru" Text="Этаж"/></TextBlock>
+        <Button Content="ОК" Margin="200,200,200,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <CheckBox Content="Элементы только с активного вида" HorizontalAlignment="Left" Margin="30,150,0,0" VerticalAlignment="Top" Width="247" Checked="CheckBox_ActiveView_elems" IsChecked="True" Unchecked="CheckBox_ActiveView_elems_Unchecked"/>
+        <CheckBox Content="Уровни на активном виде" HorizontalAlignment="Left" Margin="30,170,0,0" VerticalAlignment="Top" Width="247" Checked="CheckBox_ActiveView_levels" IsChecked="True" Unchecked="CheckBox_ActiveView_Levels_Unchecked"/>
     </Grid>
 </Window>

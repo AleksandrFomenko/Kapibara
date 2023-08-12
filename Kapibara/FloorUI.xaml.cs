@@ -63,7 +63,6 @@ namespace Kapibara
             {
                 t.Start();
                 ExecuteTransactionFloor();
-
                 t.Commit();
             }
             Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
