@@ -40,9 +40,6 @@ namespace Kapibara
             RibbonPanel panel_two = application.CreateRibbonPanel("Kapibarja", "Вентиляция");
 
 
-          вапваапваап
-
-
             adWin.RibbonControl ribbon = adWin.ComponentManager.Ribbon;
 
             
