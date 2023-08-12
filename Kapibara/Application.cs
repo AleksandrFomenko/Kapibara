@@ -71,7 +71,7 @@ namespace Kapibara
             PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина инженерных\nсетей", assemblyPath, "Kapibara.Length");
             PushButtonData pbdThree = new PushButtonData("ThidButton", "Тётя Лена", assemblyPath, "Kapibara.WritingToParameter");
             PushButtonData pbdTFour = new PushButtonData("FourthButton", "Этаж", assemblyPath, "Kapibara.Floor");
-           // PushButtonData pbdTFive = new PushButtonData("FivethhButton", "тестовое задание", assemblyPath, "Kapibara.test_task");
+           
 
 
 
