@@ -20,8 +20,6 @@ using Autodesk.Revit.UI;
 
 namespace Kapibara
 {
-
-
     public partial class UISystemName : Window
     {
         public UISystemName(Document doc)
@@ -30,7 +28,7 @@ namespace Kapibara
             Doc = doc;
         }
         Document Doc;
-        List<BuiltInCategory> cats_duct = new List<BuiltInCategory>()
+        private List<BuiltInCategory> cats_duct = new List<BuiltInCategory>()
         {
             BuiltInCategory.OST_DuctCurves,
             BuiltInCategory.OST_FlexDuctCurves,
@@ -42,7 +40,7 @@ namespace Kapibara
             BuiltInCategory.OST_DuctFitting
         };
 
-        List<BuiltInCategory> cats_pipes = new List<BuiltInCategory>()
+        private List<BuiltInCategory> cats_pipes = new List<BuiltInCategory>()
         {
             BuiltInCategory.OST_PipeCurves,
             BuiltInCategory.OST_PipeInsulations,
@@ -54,9 +52,9 @@ namespace Kapibara
             BuiltInCategory.OST_FlexPipeCurves
         };
 
-        List<Element> elements = new List<Element>();
-        string ParameterName;
-        BuiltInParameter bp;
+        private List<Element> elements = new List<Element>();
+        private string ParameterName;
+        private BuiltInParameter bp;
         private bool duct;
         private bool activeView;
         private void Window_Loaded(object sender, RoutedEventArgs e)

@@ -81,6 +81,9 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Floor.cs" />
+    <Compile Include="FloorUI.xaml.cs">
+      <DependentUpon>FloorUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WritingToParameterWPF.xaml.cs">
       <DependentUpon>WritingToParameterWPF.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FloorUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WritingToParameterWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
