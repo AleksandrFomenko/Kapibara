@@ -61,6 +61,7 @@ namespace Kapibara
         {
             BlockSystemName.Items.Add("Имя системы");
             BlockSystemName.Items.Add("Сокращение для системы");
+            BlockSystemName.Items.Add("Тип системы");
             BlockSystemName.SelectedIndex = 0;
             BlockElements.Items.Add("Трубопроводам");
             BlockElements.Items.Add("Воздуховодам");
@@ -146,6 +147,11 @@ namespace Kapibara
             {
                 bp = BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM;
             }
+            else if (selectedElement == "Тип системы")
+            {
+                bp = BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM;
+               
+            }
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -201,23 +207,43 @@ namespace Kapibara
 
             foreach (Element elem in elements)
             {
-                if (elem.get_Parameter(bp) != null && elem.get_Parameter(bp).AsString() != null && elem.get_Parameter(bp).AsString() != "")
+                var par = elem.get_Parameter(bp);
+
+                if (bp == BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM)
                 {
-                    if (elem.LookupParameter(ParameterName) != null && !elem.LookupParameter(ParameterName).IsReadOnly)
+                    if (par != null && par.AsValueString() != null && par.AsValueString() != "Не определено")
                     {
-                        cm.setParameterValueByNameToElement(elem, ParameterName, elem.get_Parameter(bp).AsString());
-                    }
+                        cm.setParameterValueByNameToElement(elem, ParameterName, par.AsValueString());
 
-
-                    foreach (Element subelem in cm.GetSubComponents(elem))
-                    {
-                        cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsString());
-                        foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                        foreach (Element subelem in cm.GetSubComponents(elem))
                         {
-                            cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsString());
+                            cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsValueString());
+                            foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                            {
+                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsValueString());
+                            }
                         }
-                    }
+
+                    } 
                 }
+                else
+                {
+                    if (par != null && par.AsString() != null && par.AsString() != "")
+                    {
+                        cm.setParameterValueByNameToElement(elem, ParameterName, par.AsString());
+                        foreach (Element subelem in cm.GetSubComponents(elem))
+                        {
+                            cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsString());
+                            foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                            {
+                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsString());
+                            }
+                        }
+
+                    }
+
+                }
+
             }
         }
     }

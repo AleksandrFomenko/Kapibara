@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Kapibara
 {
@@ -13,8 +14,10 @@ namespace Kapibara
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-
-            TaskDialog.Show("123", "Скоро может быть тут что-то появится");
+            UIApplication uiApp = commandData.Application;
+            Document doc = uiApp.ActiveUIDocument.Document;
+            FloorUI wpfform = new FloorUI(doc);
+            wpfform.ShowDialog();
             return Result.Succeeded;
         }
 
