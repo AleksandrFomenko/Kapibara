@@ -18,9 +18,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using System.Linq;
-
-
-
+using Autodesk.Revit.DB.Mechanical;
 
 namespace Kapibara
 {
@@ -32,14 +30,21 @@ namespace Kapibara
             Doc = doc;
             InitializeComponent();
         }
-        Document Doc;
+        static Document Doc;
         private bool activeViewLevel;
         private bool activeViewElem;
         private int value_familyInstancse;
-        private FilteredElementCollector collectorView;
+        private FilteredElementCollector collectorLevels;
         private FilteredElementCollector collectorElements;
-        
-        
+        private string parameterNameString;
+        private string x = "0";
+        private bool setNegativeLevel;
+        private string NegativeLevelText;
+        private bool setHightLevel;
+        private string HighLevelText;
+
+
+
 
         private string FloorParam = "ADSK_Этаж";
 
@@ -54,29 +59,69 @@ namespace Kapibara
         BuiltInCategory.OST_FlexDuctCurves,
         BuiltInCategory.OST_PipeCurves
         };
+
         ElementMulticategoryFilter emf = new ElementMulticategoryFilter(cats_iso);
 
+      
 
-        
+
+
 
         private void parametersComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            string selectedParameterName = parametersComboBox.SelectedItem.ToString();
+            parameterNameString = selectedParameterName;
 
         }
+        private void WinLoad_floor(object sender, RoutedEventArgs e)
+        {
+            BindingMap bindingMap = Doc.ParameterBindings;
+            DefinitionBindingMapIterator iterator = bindingMap.ForwardIterator();
+            List<String> allParametersStr = new List<String>();
 
+            while (iterator.MoveNext())
+            {
+                Definition definition = iterator.Key as Definition;
+                if (definition != null)
+                {
+                    ParameterType paramType = definition.ParameterType;
+
+                    if (paramType == ParameterType.Text)
+                    {
+                        allParametersStr.Add(definition.Name);
+                    }
+                }
+            }
+            if (allParametersStr.Count != 0)
+            {
+                foreach (String par in allParametersStr)
+                {
+                    if (!parametersComboBox.Items.Contains(par))
+                    {
+                        parametersComboBox.Items.Add(par);
+                    }
+                    if (par == "ADSK_Этаж")
+                    {
+                        parametersComboBox.SelectedItem = "ADSK_Этаж";
+                    }
+                }
+            }
+            else
+            {
+                parametersComboBox.Items.Add("Параметры проекта отсутствуют");
+                parametersComboBox.SelectedItem = "Параметры проекта отсутствуют";
+            }
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             using (Transaction t = new Transaction(Doc, "floor"))
             {
                 t.Start();
-             //  ExecuteTransactionFloor();
-                List<Element> elem_a = new FilteredElementCollector(Doc)
-              .OfClass(typeof(FamilyInstance))
-              .WhereElementIsNotElementType()
-              .ToList();
-               
-                Autodesk.Revit.UI.TaskDialog.Show("Succeeded", string.Format("Количество: {0}", elem_a.Count));
+               ExecuteTransactionFloor();
+
+                Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
                 t.Commit();
+                Close();
             }
             
         }
@@ -100,58 +145,131 @@ namespace Kapibara
         {
             activeViewElem = false;
         }
-        static int GetFloorNumberFromInstance(Document doc, FamilyInstance familyInstance, List<Level> levels)
+        //Уровень точки.
+        static int GetFloorNumber(double Z, List<Level> levels)
         {
-            double instanceElevation = (familyInstance.Location as LocationPoint).Point.Z;
-            
+            List<Level> negativeElevationLevels = levels
+                .Where(level => Math.Round(level.Elevation)<0)
+                .ToList();
 
-            int left = 0;
-            int right = levels.Count - 1;
             int floorNumber = 0;
 
-            while (left <= right)
+            for (int i = 0; i < levels.Count; i++)
             {
-                int mid = left + (right - left) / 2;
-                Level midLevel = levels[mid];
+                Level level = levels[i];
 
-                if (midLevel.Elevation > instanceElevation)
+                if (Z >= level.Elevation)
                 {
-                    floorNumber = midLevel.Elevation < 0 ? (int)midLevel.Elevation : (int)midLevel.Elevation + 1;
-                    right = mid - 1;
+                    floorNumber = i;
                 }
                 else
                 {
-                    floorNumber = midLevel.Elevation < 0 ? (int)Math.Floor(midLevel.Elevation) : (int)Math.Ceiling(midLevel.Elevation);
-                    left = mid + 1;
+                    break;
                 }
             }
-
+            if (negativeElevationLevels.Count > 0)
+            {
+                floorNumber -= negativeElevationLevels.Count;
+                if (Z >= 0)
+                {
+                    floorNumber++;
+                }
+            }
+            
             return floorNumber;
+        }
+        //Получение двух точек у трубопроводов и воздуховодов
+        static (double,double) ProcessTwoPoints (Element elem, List<Level>levels)
+        {
+
+            double firstPointZ = 0;
+            double secondPointZ = 0;
+            
+            if (elem is Pipe pipe || elem is Duct duct)
+            {
+                LocationCurve lc = (LocationCurve)elem.Location;
+                Curve c = lc.Curve;
+                IList<XYZ> xyz = c.Tessellate();
+                firstPointZ = xyz[0].Z;
+                secondPointZ = xyz[1].Z;
+            }
+            return (firstPointZ, firstPointZ);
+        }
+
+        //Обработка строковых значений у FamilyInstance (1 точка).
+        private string GetStringFloor(int first, List<Level> Levels)
+        {
+            string result;
+
+            List<Level> HighLevels = Levels
+                .Where(level => Math.Round(level.Elevation) > 0)
+                .ToList();
+
+            if (setNegativeLevel && first <0)
+            {
+                result = NegativeLevelText;
+
+            }else if (setHightLevel && first == HighLevels.Count)
+            {
+                result = HighLevelText;
+            } else
+            {
+                result = string.Format("{0} этаж", first);
+            }
+            return result;
+            
+        }
+        //Обработка строковых значений у труб, воздуховодов (2 точки)
+        private string GetStringFloor(int first,int second, List<Level> Levels)
+        {
+
+            string result = "а";
+
+
+
+            return result;
+
         }
         private void ExecuteTransactionFloor()
         {
-            List<Element> elem_a = new FilteredElementCollector(Doc)
-                .OfClass(typeof(FamilyInstance))
-                .WhereElementIsNotElementType()
-                .ToList();
-            if (activeViewLevel)
+            if (!activeViewLevel)
             {
-                collectorView = new FilteredElementCollector(Doc);
+                collectorLevels = new FilteredElementCollector(Doc);
             } else
             {
-                collectorView= new FilteredElementCollector(Doc,Doc.ActiveView.Id);
+                collectorLevels = new FilteredElementCollector(Doc,Doc.ActiveView.Id);
             }
 
-            List<Element> levels = collectorView
+            List<Level> levels = collectorLevels
                 .OfCategory(BuiltInCategory.OST_Levels)
                 .WhereElementIsNotElementType()
+                .Cast<Level>()
                 .ToList();
-            
-            List<Element> sortedLevels = levels.OrderBy(level => ((Level)level).Elevation).ToList();
-           // GetFloorNumberFromInstance(Doc, FamilyInstance familyInstance, levels);
 
+            if (!activeViewElem)
+            {
+                collectorElements = new FilteredElementCollector(Doc);
+
+            } else
+            {
+                collectorElements = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
+            }
+            List<FamilyInstance> familyInstances = collectorElements
+                .OfClass(typeof(FamilyInstance))
+                .WhereElementIsNotElementType()
+                .Cast<FamilyInstance>()
+                .ToList();
+
+            List<Level> sortedLevels = levels.OrderBy(level => level.Elevation).ToList();
+
+            CollectionMethods cm = new CollectionMethods();
+
+            foreach (FamilyInstance fi in familyInstances)
+            {
+                double instanceElevation = (fi.Location as LocationPoint).Point.Z;
+                x = GetFloorNumberFromInstance(instanceElevation, sortedLevels).ToString();
+                cm.setParameterValueByNameToElement(fi as Element, parameterNameString,x.ToString());
+            }
         }
-        
     }
-
 }

@@ -4,14 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kapibara"
-             mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="500" Height="300">
-    <Grid Background="#FFCCCCCC" Margin="0,0,0,0">
-        <ComboBox x:Name="parametersComboBox" HorizontalAlignment="Right" Margin="0,110,30,0" VerticalAlignment="Top" Width="440" SelectionChanged="parametersComboBox_SelectionChanged"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False"><Run Language="ru-ru" Text="Выбор параметра"/></TextBlock>
-        <TextBlock HorizontalAlignment="Center" Margin="0,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440" FontSize="14" Height="33" IsEnabled="False"><Run Text="Рекомендуется з"/><Run Text="апускать"/><Run Text=" только по видимым на виде уровням"/><Run Text="."/><LineBreak/><LineBreak/><Run/><LineBreak/><Run/><LineBreak/><Run/></TextBlock>
-        <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" FontSize="18" TextAlignment="Center" IsEnabled="False"><Run Language="ru-ru" Text="Этаж"/></TextBlock>
-        <Button Content="ОК" Margin="200,210,200,0" Click="Button_Click" Height="34" VerticalAlignment="Top"/>
-        <CheckBox Content="Элементы только с активного вида" HorizontalAlignment="Left" Margin="30,150,0,0" VerticalAlignment="Top" Width="247" Checked="CheckBox_ActiveView_elems" IsChecked="True" Unchecked="CheckBox_ActiveView_elems_Unchecked"/>
-        <CheckBox Content="Уровни на активном виде" HorizontalAlignment="Left" Margin="30,170,0,0" VerticalAlignment="Top" Width="247" Checked="CheckBox_ActiveView_levels" IsChecked="True" Unchecked="CheckBox_ActiveView_Levels_Unchecked"/>
+             mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="400" Loaded="WinLoad_floor">
+    <Grid Background="#FFCCCCCC">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ComboBox x:Name="parametersComboBox" HorizontalAlignment="Left" Margin="30,133,0,0" VerticalAlignment="Top" Width="540" SelectionChanged="parametersComboBox_SelectionChanged" FontSize="14"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" FontSize="16"><Run Language="ru-ru" Text="Выбор параметра"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="540" FontSize="16" Height="31" IsEnabled="False" Margin="30,50,0,0"><Run Text="Рекомендуется з"/><Run Text="апускать"/><Run Text=" только по видимым на виде уровням"/><Run Text="."/><LineBreak/><Run/><LineBreak/><Run/><LineBreak/><Run/></TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" FontSize="20" TextAlignment="Center" IsEnabled="False"><Run Language="ru-ru" Text="Этаж"/></TextBlock>
+        <Button Content="ОК" Margin="220,320,220,0" Click="Button_Click" RenderTransformOrigin="0.5,0.5" Height="25" VerticalAlignment="Top">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <CheckBox Content="Элементы только с активного вида" HorizontalAlignment="Center" Margin="5,180,5,0" VerticalAlignment="Top" Width="540" Checked="CheckBox_ActiveView_elems" IsChecked="True" Unchecked="CheckBox_ActiveView_elems_Unchecked" FontSize="16" Foreground="Black" RenderTransformOrigin="0.5,0.5"/>
+        <CheckBox Content="Уровни на активном виде" HorizontalAlignment="Center" Margin="0,210,0,0" VerticalAlignment="Top" Width="540" Checked="CheckBox_ActiveView_levels" IsChecked="True" Unchecked="CheckBox_ActiveView_Levels_Unchecked" FontSize="16"/>
     </Grid>
 </Window>
