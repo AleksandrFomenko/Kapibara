@@ -33,20 +33,16 @@ namespace Kapibara
         static Document Doc;
         private bool activeViewLevel;
         private bool activeViewElem;
-        private int value_familyInstancse;
         private FilteredElementCollector collectorLevels;
         private FilteredElementCollector collectorElements;
+        private FilteredElementCollector collectorPipeDuct;
         private string parameterNameString;
-        private string x = "0";
         private bool setNegativeLevel;
         private string NegativeLevelText;
         private bool setHightLevel;
         private string HighLevelText;
-
-
-
-
-        private string FloorParam = "ADSK_Этаж";
+        private bool setNumber;
+        private string resultFinal;
 
         private static List<BuiltInCategory> cats_iso = new List<BuiltInCategory> {
             BuiltInCategory.OST_DuctInsulations,
@@ -54,18 +50,13 @@ namespace Kapibara
             BuiltInCategory.OST_PipeInsulations
         };
 
-        List<BuiltInCategory> cats_dct_pipe = new List<BuiltInCategory> {
+        private static List<BuiltInCategory> cats_dct_pipe = new List<BuiltInCategory> {
         BuiltInCategory.OST_DuctCurves,
         BuiltInCategory.OST_FlexDuctCurves,
         BuiltInCategory.OST_PipeCurves
         };
 
-        ElementMulticategoryFilter emf = new ElementMulticategoryFilter(cats_iso);
-
-      
-
-
-
+        ElementMulticategoryFilter emfDuctPipes = new ElementMulticategoryFilter(cats_dct_pipe);
 
         private void parametersComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -117,9 +108,9 @@ namespace Kapibara
             using (Transaction t = new Transaction(Doc, "floor"))
             {
                 t.Start();
-               ExecuteTransactionFloor();
+                int summOfElements =  ExecuteTransactionFloor();
 
-                Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
+                Autodesk.Revit.UI.TaskDialog.Show("Succeeded", string.Format("Обработано {0} элементов",summOfElements));
                 t.Commit();
                 Close();
             }
@@ -145,15 +136,49 @@ namespace Kapibara
         {
             activeViewElem = false;
         }
-        //Уровень точки.
-        static int GetFloorNumber(double Z, List<Level> levels)
+        private void HighLevel_Checked(object sender, RoutedEventArgs e)
         {
-            List<Level> negativeElevationLevels = levels
-                .Where(level => Math.Round(level.Elevation)<0)
-                .ToList();
+            setHightLevel = true;
+        }
 
+        private void HighLevel_Unchecked(object sender, RoutedEventArgs e)
+        {
+            setHightLevel = false;
+        }
+        private void NegativeLvl_Checked(object sender, RoutedEventArgs e)
+        {
+            setNegativeLevel = true;
+        }
+        private void NegativeLvl_Unchecked(object sender, RoutedEventArgs e)
+        {
+            setNegativeLevel = false;
+        }
+        private void Onlynumber_Checked(object sender, RoutedEventArgs e)
+        {
+            setNumber = true;
+        }
+
+        private void Onlynumber_Unchecked(object sender, RoutedEventArgs e)
+        {
+            setNumber = false;
+        }
+        private void HighText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            System.Windows.Controls.TextBox textBox = (System.Windows.Controls.TextBox)sender;
+            HighLevelText = textBox.Text;
+
+        }
+
+        private void NegativeText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            System.Windows.Controls.TextBox textBox = (System.Windows.Controls.TextBox)sender;
+            NegativeLevelText = textBox.Text;
+
+        }
+        //Уровень точки.
+        static int GetFloorNumber(double Z, List<Level> levels, List<Level> negativeElevationLevels)
+        {
             int floorNumber = 0;
-
             for (int i = 0; i < levels.Count; i++)
             {
                 Level level = levels[i];
@@ -174,12 +199,17 @@ namespace Kapibara
                 {
                     floorNumber++;
                 }
+            } else
+            {
+                floorNumber++;
             }
-            
+
             return floorNumber;
+
+
         }
         //Получение двух точек у трубопроводов и воздуховодов
-        static (double,double) ProcessTwoPoints (Element elem, List<Level>levels)
+        static (double,double) ProcessTwoPoints (Element elem)
         {
 
             double firstPointZ = 0;
@@ -192,49 +222,169 @@ namespace Kapibara
                 IList<XYZ> xyz = c.Tessellate();
                 firstPointZ = xyz[0].Z;
                 secondPointZ = xyz[1].Z;
+       
             }
-            return (firstPointZ, firstPointZ);
+            return (firstPointZ, secondPointZ);
         }
 
         //Обработка строковых значений у FamilyInstance (1 точка).
-        private string GetStringFloor(int first, List<Level> Levels)
+        private string GetStringFloor(int first, List<Level> HighLevels)
         {
             string result;
 
-            List<Level> HighLevels = Levels
-                .Where(level => Math.Round(level.Elevation) > 0)
-                .ToList();
-
-            if (setNegativeLevel && first <0)
+            if (setNumber)
             {
-                result = NegativeLevelText;
-
-            }else if (setHightLevel && first == HighLevels.Count)
-            {
-                result = HighLevelText;
+                result = string.Format("{0}", first);
             } else
             {
-                result = string.Format("{0} этаж", first);
+                if (setNegativeLevel && first < 0)
+                {
+                    result = NegativeLevelText;
+
+                }
+                else if (setHightLevel && first == HighLevels.Count)
+                {
+                    result = HighLevelText;
+                }
+                else
+                {
+                    result = string.Format("{0} этаж", first);
+                }
+
             }
-            return result;
             
+            return result;   
         }
         //Обработка строковых значений у труб, воздуховодов (2 точки)
-        private string GetStringFloor(int first,int second, List<Level> Levels)
+        private string GetStringFloor(int first,int second, List<Level> HighLevels)
         {
+            string result;
+            int maximum = Math.Max(first, second);
+            int minimum = Math.Min(first, second);
 
-            string result = "а";
 
+            if (first == second) {
+                result = GetStringFloor(first, HighLevels);
+            } else {
+                if (setNumber)
+                {
+                    result = string.Format("{0}—{1}", minimum, maximum);
+                }
+                else
+                {
+                    if (setNegativeLevel)
+                    {
+                        if (minimum < 0)
+                        {
+                            if (maximum < 0)
+                            {
+                                result = NegativeLevelText;
+                            }
+                            else
+                            {
+                                if (setHightLevel)
+                                {
+                                    if (maximum == HighLevels.Count)
+                                    {
+                                        result = string.Format("C {0} до {1}", NegativeLevelText, HighLevelText);
+                                    }
+                                    else
+                                    {
+                                        result = string.Format("C {0} до {1} этажа", NegativeLevelText, maximum);
+                                    }
+                                }
+                                else
+                                {
+                                    result = string.Format("C {0} до {1} этажа", NegativeLevelText, maximum);
+                                }
+                            }
+                        } else
+                        {
+                            if (setHightLevel)
+                            {
+                                if (maximum == HighLevels.Count)
+                                {
+                                    result = string.Format("C {0} этажа до {1}", minimum, HighLevelText);
+                                }
+                                else
+                                {
+                                    result = string.Format("C {0} этажа до {1} этажа", minimum, maximum);
+                                }
+                            }
+                            else
+                            {
+                                if (maximum < 0)
+                                {
+                                    result = string.Format("C {0} до {1} этажа1111", NegativeLevelText, maximum);
+                                }
+                                else
+                                {
+                                    result = string.Format("C {0} этажа до {1} этажа", minimum, maximum);
+                                }
+                            }
 
+                        }
+                    }
+                    else if (setHightLevel)
+                    {
+                        if (maximum == HighLevels.Count)
+                        {
+                            if (minimum == HighLevels.Count)
+                            {
+                                result = HighLevelText;
+                            }
+                            else
+                            {
+                                if (setNegativeLevel)
+                                {
+                                    if (minimum < 0)
+                                    {
+                                        result = string.Format("C {0} до {1}", NegativeLevelText, HighLevelText);
+                                    }
+                                    else
+                                    { 
+                                        if(maximum == HighLevels.Count) {
+                                            result = string.Format("C {0} этажа до {1}", minimum, HighLevelText);
+
+                                        } else {
+                                            result = string.Format("C {0} этажа до {1} этажа", minimum, maximum);
+                                        }
+                                        
+                                    }
+                                }
+                                else
+                                {
+                                    result = string.Format("C {0} этажа до {1}", minimum, HighLevelText);
+                                }
+                            }
+                        } else
+                        {
+                            if (minimum<0)
+                            {
+                                result = string.Format("C {0}  до {1} этажа", NegativeLevelText, maximum);
+                            }
+                            else
+                            {
+                                result = string.Format("C {0} этажа до {1} этажа", minimum, maximum);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result = string.Format("C {0} этажа до {1} этажа", minimum, maximum);
+                    }
+                }
+            }
 
             return result;
-
         }
-        private void ExecuteTransactionFloor()
+
+        private int ExecuteTransactionFloor()
         {
             if (!activeViewLevel)
             {
                 collectorLevels = new FilteredElementCollector(Doc);
+
             } else
             {
                 collectorLevels = new FilteredElementCollector(Doc,Doc.ActiveView.Id);
@@ -249,27 +399,56 @@ namespace Kapibara
             if (!activeViewElem)
             {
                 collectorElements = new FilteredElementCollector(Doc);
+                collectorPipeDuct = new FilteredElementCollector(Doc);
 
             } else
             {
                 collectorElements = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
+                collectorPipeDuct = new FilteredElementCollector (Doc, Doc.ActiveView.Id);
             }
+
             List<FamilyInstance> familyInstances = collectorElements
                 .OfClass(typeof(FamilyInstance))
                 .WhereElementIsNotElementType()
                 .Cast<FamilyInstance>()
                 .ToList();
+            List <Element> ductPipe = collectorPipeDuct
+                .WhereElementIsNotElementType()
+                .WherePasses(emfDuctPipes)
+                .ToList();
+
 
             List<Level> sortedLevels = levels.OrderBy(level => level.Elevation).ToList();
 
             CollectionMethods cm = new CollectionMethods();
 
+            List<Level> HighLevels = sortedLevels
+                .Where(level => Math.Round(level.Elevation) >= 0)
+                .ToList();
+
+            List<Level> negativeElevationLevels = levels
+                .Where(level => Math.Round(level.Elevation) < 0)
+                .ToList();
+
             foreach (FamilyInstance fi in familyInstances)
             {
                 double instanceElevation = (fi.Location as LocationPoint).Point.Z;
-                x = GetFloorNumberFromInstance(instanceElevation, sortedLevels).ToString();
-                cm.setParameterValueByNameToElement(fi as Element, parameterNameString,x.ToString());
+                resultFinal = GetStringFloor(GetFloorNumber(instanceElevation, sortedLevels, negativeElevationLevels), HighLevels);
+                
+                cm.setParameterValueByNameToElement(fi as Element, parameterNameString, resultFinal.ToString());
             }
+            foreach (Element elem in ductPipe) {
+                (double firstPoint, double secondPoint) = ProcessTwoPoints(elem);
+                int firstPointToInt = GetFloorNumber(firstPoint, sortedLevels, negativeElevationLevels);
+                int secondPointToInt = GetFloorNumber(secondPoint, sortedLevels, negativeElevationLevels);
+                resultFinal = GetStringFloor(firstPointToInt, secondPointToInt, HighLevels);
+                cm.setParameterValueByNameToElement(elem as Element, parameterNameString, resultFinal.ToString());
+            }
+
+            return ductPipe.Count+familyInstances.Count;
         }
+        
+
     }
 }
+        
