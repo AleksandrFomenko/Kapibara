@@ -36,6 +36,8 @@ namespace Kapibara
         private FilteredElementCollector collectorLevels;
         private FilteredElementCollector collectorElements;
         private FilteredElementCollector collectorPipeDuct;
+        private FilteredElementCollector collectorFlexPipeDuct;
+        private FilteredElementCollector collectorIsolation;
         private string parameterNameString;
         private bool setNegativeLevel;
         private string NegativeLevelText;
@@ -49,14 +51,21 @@ namespace Kapibara
             BuiltInCategory.OST_DuctLinings,
             BuiltInCategory.OST_PipeInsulations
         };
+        private static List<BuiltInCategory> cats_flexPipeDuct = new List<BuiltInCategory> {
+            BuiltInCategory.OST_FlexPipeCurves,
+            BuiltInCategory.OST_FlexDuctCurves,
+        };
+        
 
         private static List<BuiltInCategory> cats_dct_pipe = new List<BuiltInCategory> {
         BuiltInCategory.OST_DuctCurves,
-        BuiltInCategory.OST_FlexDuctCurves,
         BuiltInCategory.OST_PipeCurves
         };
 
         ElementMulticategoryFilter emfDuctPipes = new ElementMulticategoryFilter(cats_dct_pipe);
+        ElementMulticategoryFilter emfIsolation = new ElementMulticategoryFilter(cats_iso);
+        ElementMulticategoryFilter emfFlex = new ElementMulticategoryFilter(cats_flexPipeDuct);
+        
 
         private void parametersComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -400,11 +409,15 @@ namespace Kapibara
             {
                 collectorElements = new FilteredElementCollector(Doc);
                 collectorPipeDuct = new FilteredElementCollector(Doc);
+                collectorFlexPipeDuct = new FilteredElementCollector (Doc);
+                collectorIsolation = new FilteredElementCollector(Doc);
 
             } else
             {
                 collectorElements = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
                 collectorPipeDuct = new FilteredElementCollector (Doc, Doc.ActiveView.Id);
+                collectorFlexPipeDuct = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
+                collectorIsolation = new FilteredElementCollector(Doc, Doc.ActiveView.Id);
             }
 
             List<FamilyInstance> familyInstances = collectorElements
@@ -415,6 +428,14 @@ namespace Kapibara
             List <Element> ductPipe = collectorPipeDuct
                 .WhereElementIsNotElementType()
                 .WherePasses(emfDuctPipes)
+                .ToList();
+            List<Element> isolation = collectorIsolation
+                .WhereElementIsNotElementType()
+                .WherePasses(emfIsolation)
+                .ToList();
+            List<Element> flexDuctPipeCollector = collectorFlexPipeDuct
+                .WhereElementIsNotElementType()
+                .WherePasses(emfFlex)
                 .ToList();
 
 
@@ -429,13 +450,37 @@ namespace Kapibara
             List<Level> negativeElevationLevels = levels
                 .Where(level => Math.Round(level.Elevation) < 0)
                 .ToList();
-
+            
             foreach (FamilyInstance fi in familyInstances)
             {
                 double instanceElevation = (fi.Location as LocationPoint).Point.Z;
                 resultFinal = GetStringFloor(GetFloorNumber(instanceElevation, sortedLevels, negativeElevationLevels), HighLevels);
                 
                 cm.setParameterValueByNameToElement(fi as Element, parameterNameString, resultFinal.ToString());
+            }
+            foreach(Element elem in flexDuctPipeCollector)
+{
+                if (elem is FlexPipe flexPipe)
+                {
+                    
+                    double PointZ = 0;
+                    LocationCurve lc = (LocationCurve)flexPipe.Location;
+                    Curve c =(HermiteSpline) lc.Curve;
+                    IList<XYZ> xyz = c.Tessellate();
+                    PointZ = xyz[0].Z;
+                    resultFinal = GetStringFloor(GetFloorNumber(PointZ, sortedLevels, negativeElevationLevels), HighLevels);
+                    cm.setParameterValueByNameToElement(flexPipe as Element, parameterNameString, resultFinal.ToString());
+                }
+                else if (elem is FlexDuct flexDuct)
+                {
+                    double PointZ = 0;
+                    LocationCurve lc = (LocationCurve)flexDuct.Location;
+                    Curve c = (HermiteSpline)lc.Curve;
+                    IList<XYZ> xyz = c.Tessellate();
+                    PointZ = xyz[0].Z;
+                    resultFinal = GetStringFloor(GetFloorNumber(PointZ, sortedLevels, negativeElevationLevels), HighLevels);
+                    cm.setParameterValueByNameToElement(flexDuct as Element, parameterNameString, resultFinal.ToString());
+                }
             }
             foreach (Element elem in ductPipe) {
                 (double firstPoint, double secondPoint) = ProcessTwoPoints(elem);
@@ -444,11 +489,46 @@ namespace Kapibara
                 resultFinal = GetStringFloor(firstPointToInt, secondPointToInt, HighLevels);
                 cm.setParameterValueByNameToElement(elem as Element, parameterNameString, resultFinal.ToString());
             }
+            foreach (Element insulation in isolation)
+            {
+                if (insulation is DuctInsulation ductInsulation)
+                {
+                    ElementId hostElementId = ductInsulation.HostElementId;
+                    if (hostElementId!= null && hostElementId != ElementId.InvalidElementId)
+                    {
+                        Element hostElement = Doc.GetElement(hostElementId);
+                        if (hostElement != null)
+                        {
+                            Parameter parHostElement = Doc.GetElement(hostElementId).LookupParameter(parameterNameString);
+                            if (parHostElement != null)
+                            {
+                                string valueInsulationDuct = parHostElement.AsString();
+                                cm.setParameterValueByNameToElement(insulation, parameterNameString, valueInsulationDuct);
+                            }
+                        }
+                    }
+                }
+                else if (insulation is PipeInsulation pipeInsulation)
+                {
+                    ElementId hostElementIdPipe = pipeInsulation.HostElementId;
+                    if (hostElementIdPipe != null && hostElementIdPipe != ElementId.InvalidElementId)
+                    {
+                        Element hostElement = Doc.GetElement(hostElementIdPipe);
+                        if (hostElement != null)
+                        {
+                            Parameter parHostElementPipe = Doc.GetElement(hostElementIdPipe).LookupParameter(parameterNameString);
+                            if (parHostElementPipe != null)
+                            {
+                                string valueInsulationDuct = parHostElementPipe.AsString();
+                                cm.setParameterValueByNameToElement(insulation, parameterNameString, valueInsulationDuct);
+                            }
+                        }
+                    }
 
-            return ductPipe.Count+familyInstances.Count;
+                }
+            }
+            return ductPipe.Count + familyInstances.Count + flexDuctPipeCollector.Count + isolation.Count;
         }
-        
-
     }
 }
         

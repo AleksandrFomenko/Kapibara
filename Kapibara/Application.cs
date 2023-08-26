@@ -19,9 +19,7 @@ namespace Kapibara
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Application : IExternalApplication
-    {
-        
-            
+    { 
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Succeeded;
@@ -34,15 +32,11 @@ namespace Kapibara
              application.CreateRibbonTab("Kapibarja");
             
 
-
-
             RibbonPanel panel = application.CreateRibbonPanel("Kapibarja","MEP общие");
             RibbonPanel panel_two = application.CreateRibbonPanel("Kapibarja", "Вентиляция");
 
-
             adWin.RibbonControl ribbon = adWin.ComponentManager.Ribbon;
 
-            
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPurple = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(204, 204, 255));
             System.Windows.Media.SolidColorBrush panelBackgroundBrushPink = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 218, 221));
             System.Windows.Media.SolidColorBrush panelBackgroundBrushYellow = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 253, 208));
@@ -59,9 +53,7 @@ namespace Kapibara
                     if (panel1.Source.Title == "Вентиляция")
                     {
                         panel1.CustomPanelTitleBarBackground = panelBackgroundBrushPink;
-
-                    }
-                    
+                    }  
                 }
             }
 
@@ -70,9 +62,8 @@ namespace Kapibara
             PushButtonData pbdTwo = new PushButtonData("SecondButton", "Длина инженерных\nсетей", assemblyPath, "Kapibara.Length");
             PushButtonData pbdThree = new PushButtonData("ThidButton", "Тётя Лена", assemblyPath, "Kapibara.WritingToParameter");
             PushButtonData pbdTFour = new PushButtonData("FourthButton", "Этаж", assemblyPath, "Kapibara.Floor");
-           
-
-
+            PushButtonData pbdTFive = new PushButtonData("FiveButton", "Нумерация", assemblyPath, "Kapibara.Numeration");
+            PushButtonData pbdTSix = new PushButtonData("SixButton", "Сортировка", assemblyPath, "Kapibara.Numeration");
 
 
             Uri uri = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib.png"));
@@ -87,15 +78,17 @@ namespace Kapibara
             pbdTwo.LargeImage = bm_second;
             pbdThree.LargeImage = bm_Third;
             pbdTFour.LargeImage = bm_fourth;
-
-
-
-
             panel.AddItem(pbdOne);
             panel.AddItem(pbdTwo);
             panel.AddItem(pbdThree);
             panel.AddItem(pbdTFour);
-           
+            
+            SplitButtonData splitButtonData = new SplitButtonData("SplitButton", "Меню");
+            SplitButton sbOne = panel.AddItem(splitButtonData) as SplitButton;
+            PushButton name1 = sbOne.AddPushButton(pbdTFive);
+            PushButton name2 = sbOne.AddPushButton(pbdTSix);
+            sbOne.AddSeparator();
+
             return Result.Succeeded;
          
         }

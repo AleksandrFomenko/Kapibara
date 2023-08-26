@@ -209,7 +209,7 @@ namespace Kapibara
             {
                 var par = elem.get_Parameter(bp);
 
-                if (bp == BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM)
+                if (par.StorageType == StorageType.ElementId)
                 {
                     if (par != null && par.AsValueString() != null && par.AsValueString() != "Не определено")
                     {
