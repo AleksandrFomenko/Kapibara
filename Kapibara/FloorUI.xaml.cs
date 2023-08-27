@@ -19,6 +19,7 @@ using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using System.Linq;
 using Autodesk.Revit.DB.Mechanical;
+using System.Security.Claims;
 
 namespace Kapibara
 {
@@ -453,10 +454,17 @@ namespace Kapibara
             
             foreach (FamilyInstance fi in familyInstances)
             {
-                double instanceElevation = (fi.Location as LocationPoint).Point.Z;
-                resultFinal = GetStringFloor(GetFloorNumber(instanceElevation, sortedLevels, negativeElevationLevels), HighLevels);
-                
-                cm.setParameterValueByNameToElement(fi as Element, parameterNameString, resultFinal.ToString());
+                double instanceElevation;
+                LocationPoint checkLocationPoint = (fi.Location as LocationPoint);
+                if (checkLocationPoint != null) {
+                    if (checkLocationPoint.Point != null)
+                    {
+                        instanceElevation = checkLocationPoint.Point.Z;
+                        resultFinal = GetStringFloor(GetFloorNumber(instanceElevation, sortedLevels, negativeElevationLevels), HighLevels);
+                        cm.setParameterValueByNameToElement(fi as Element, parameterNameString, resultFinal.ToString());
+                    }
+                }
+
             }
             foreach(Element elem in flexDuctPipeCollector)
 {
@@ -524,7 +532,23 @@ namespace Kapibara
                             }
                         }
                     }
-
+                }
+                else if (insulation is DuctLining ductLining)
+                {
+                    ElementId hostElementIductLining = ductLining.HostElementId;
+                    if (hostElementIductLining != null && hostElementIductLining != ElementId.InvalidElementId)
+                    {
+                        Element hostElement = Doc.GetElement(hostElementIductLining);
+                        if (hostElement != null)
+                        {
+                            Parameter parHostElementDuctLining = Doc.GetElement(hostElementIductLining).LookupParameter(parameterNameString);
+                            if (parHostElementDuctLining != null)
+                            {
+                                string valueInsulationductLining = parHostElementDuctLining.AsString();
+                                cm.setParameterValueByNameToElement(insulation, parameterNameString, valueInsulationductLining);
+                            }
+                        }
+                    }
                 }
             }
             return ductPipe.Count + familyInstances.Count + flexDuctPipeCollector.Count + isolation.Count;

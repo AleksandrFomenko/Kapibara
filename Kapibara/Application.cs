@@ -83,11 +83,11 @@ namespace Kapibara
             panel.AddItem(pbdThree);
             panel.AddItem(pbdTFour);
             
-            SplitButtonData splitButtonData = new SplitButtonData("SplitButton", "Меню");
-            SplitButton sbOne = panel.AddItem(splitButtonData) as SplitButton;
-            PushButton name1 = sbOne.AddPushButton(pbdTFive);
-            PushButton name2 = sbOne.AddPushButton(pbdTSix);
-            sbOne.AddSeparator();
+           SplitButtonData splitButtonData = new SplitButtonData("SplitButton", "Меню");
+           SplitButton sbOne = panel.AddItem(splitButtonData) as SplitButton;
+           PushButton name1 = sbOne.AddPushButton(pbdTFive);
+           PushButton name2 = sbOne.AddPushButton(pbdTSix);
+           sbOne.AddSeparator();
 
             return Result.Succeeded;
          
