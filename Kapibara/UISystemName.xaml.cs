@@ -55,6 +55,7 @@ namespace Kapibara
 
         private List<Element> elements = new List<Element>();
         private string ParameterName;
+        private bool bpTypeSystem;
         private BuiltInParameter bp;
         private bool duct;
         private bool activeView;
@@ -150,8 +151,8 @@ namespace Kapibara
             }
             else if (selectedElement == "Тип системы")
             {
-                bp = BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM;
-               
+                bpTypeSystem = true;
+
             }
         }
 
@@ -198,7 +199,7 @@ namespace Kapibara
                                     {
                                         nameList.Add(msType.get_Parameter(BuiltInParameter.RBS_SYSTEM_ABBREVIATION_PARAM).AsString());
                                     }
-                                    else if (bp == BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM)
+                                    else if (bpTypeSystem)
                                     {
                                         nameList.Add(msType.Name);
                                     }
@@ -252,9 +253,13 @@ namespace Kapibara
                     .WhereElementIsNotElementType()
                     .ToElements();
             }
+            if (duct && bpTypeSystem)
+            {
+                bp = BuiltInParameter.RBS_DUCT_SYSTEM_TYPE_PARAM;
+            } else if (!duct && bpTypeSystem) {
+                bp = BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM;
+            }
 
-
-           
             foreach (Element elem in elements)
             {
                 string getSystemTypeResult = "";
@@ -281,14 +286,17 @@ namespace Kapibara
                             }
                         } else
                         {
-                            getSystemTypeResult = getSystemType(elem);
-                            cm.setParameterValueByNameToElement(elem, ParameterName, getSystemTypeResult);
-                            foreach(Element subelem in cm.GetSubComponents(elem))
+                            if (elem is FamilyInstance notSuperComponent && notSuperComponent.SuperComponent == null)
                             {
-                                cm.setParameterValueByNameToElement(subelem, ParameterName, getSystemTypeResult);
-                                foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                getSystemTypeResult = getSystemType(notSuperComponent);
+                                cm.setParameterValueByNameToElement(notSuperComponent, ParameterName, getSystemTypeResult);
+                                foreach (Element subelem in cm.GetSubComponents(notSuperComponent))
                                 {
-                                    cm.setParameterValueByNameToElement(subelem_second, ParameterName, getSystemTypeResult);
+                                    cm.setParameterValueByNameToElement(subelem, ParameterName, getSystemTypeResult);
+                                    foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                    {
+                                        cm.setParameterValueByNameToElement(subelem_second, ParameterName, getSystemTypeResult);
+                                    }
                                 }
                             }
 
@@ -309,14 +317,17 @@ namespace Kapibara
                             }
                         } else
                         {
-                            getSystemTypeResult = getSystemType(elem);
-                            cm.setParameterValueByNameToElement(elem, ParameterName, par.AsString());
-                            foreach (Element subelem in cm.GetSubComponents(elem))
+                            if (elem is FamilyInstance notSuperComponent && notSuperComponent.SuperComponent == null)
                             {
-                                cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsString());
-                                foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                getSystemTypeResult = getSystemType(notSuperComponent);
+                                cm.setParameterValueByNameToElement(notSuperComponent, ParameterName, getSystemTypeResult);
+                                foreach (Element subelem in cm.GetSubComponents(notSuperComponent))
                                 {
-                                    cm.setParameterValueByNameToElement(subelem_second, ParameterName, par.AsString());
+                                    cm.setParameterValueByNameToElement(subelem, ParameterName, getSystemTypeResult);
+                                    foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                    {
+                                        cm.setParameterValueByNameToElement(subelem_second, ParameterName, getSystemTypeResult);
+                                    }
                                 }
                             }
                         }
