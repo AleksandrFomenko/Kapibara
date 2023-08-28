@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -205,45 +206,107 @@ namespace Kapibara
                     .ToElements();
             }
 
+
+            List<String> nameList = new List<String>();
             foreach (Element elem in elements)
             {
+                string msInfo = "";
+                
                 var par = elem.get_Parameter(bp);
-
-                if (par.StorageType == StorageType.ElementId)
+                if (par != null)
                 {
-                    if (par != null && par.AsValueString() != null && par.AsValueString() != "Не определено")
+                    if (par.StorageType == StorageType.ElementId)
                     {
-                        cm.setParameterValueByNameToElement(elem, ParameterName, par.AsValueString());
-
-                        foreach (Element subelem in cm.GetSubComponents(elem))
+                        if (par.AsValueString() != null && par.AsValueString() != "Не определено")
                         {
-                            cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsValueString());
-                            foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                            cm.setParameterValueByNameToElement(elem, ParameterName, par.AsValueString());
+
+                            foreach (Element subelem in cm.GetSubComponents(elem))
                             {
-                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsValueString());
+                                cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsValueString());
+                                foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                {
+                                    cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsValueString());
+                                }
                             }
                         }
-
-                    } 
-                }
-                else
-                {
-                    if (par != null && par.AsString() != null && par.AsString() != "")
+                    }
+                    else
                     {
-                        cm.setParameterValueByNameToElement(elem, ParameterName, par.AsString());
-                        foreach (Element subelem in cm.GetSubComponents(elem))
+                        if (par.AsString() != null && par.AsString() != "")
                         {
-                            cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsString());
-                            foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                            cm.setParameterValueByNameToElement(elem, ParameterName, par.AsString());
+                            foreach (Element subelem in cm.GetSubComponents(elem))
                             {
-                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, par.AsString());
+                                cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsString());
+                                foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                {
+                                    cm.setParameterValueByNameToElement(subelem_second, ParameterName, par.AsString());
+                                }
                             }
+                        }
+                    }
+                } else
+                {
+                   if(elem is FamilyInstance fi)
+                    {
+                        MEPModel mp = fi.MEPModel;
+                        if (mp != null && mp.ConnectorManager != null && mp.ConnectorManager.Connectors != null)
+                        {
+                            msInfo = "";
+                            foreach (Connector connector in mp.ConnectorManager.Connectors)
+                            {
+                                if (connector.MEPSystem !=null) 
+                                {
+                                    if (connector.MEPSystem is MEPSystem ms){
+                                        MEPSystem msType = (MEPSystem)Doc.GetElement(ms.GetTypeId());
+                                        if (msType != null)
+                                        {
+                                            if (bp == BuiltInParameter.RBS_DUCT_PIPE_SYSTEM_ABBREVIATION_PARAM)
+                                            {
+                                                nameList.Add(msType.get_Parameter(BuiltInParameter.RBS_SYSTEM_ABBREVIATION_PARAM).AsString());
+                                            } else if (bp == BuiltInParameter.RBS_PIPING_SYSTEM_TYPE_PARAM)
+                                            {
+                                                nameList.Add(msType.Name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            nameList.Sort();
+
+                            if(nameList.Count > 0)
+                            {
+                                StringBuilder sb = new StringBuilder();
+                                foreach (string StringInfo in nameList)
+                                {
+                                    sb.Append(StringInfo);
+                                    sb.Append(",");
+                                }
+                                sb.Length--;
+                                msInfo = sb.ToString();
+                            }
+                            else
+                            {
+                                msInfo = "";
+                            }
+                            if (nameList.Count > 0)
+                            {
+                                cm.setParameterValueByNameToElement(elem, ParameterName, msInfo);
+                                foreach (Element subelem in cm.GetSubComponents(elem))
+                                {
+                                    cm.setParameterValueByNameToElement(subelem, ParameterName, msInfo);
+                                    foreach (Element subelem_second in cm.GetSubComponents(subelem))
+                                    {
+                                        cm.setParameterValueByNameToElement(subelem_second, ParameterName,msInfo);
+                                    }
+                                }
+                            }
+                            nameList.Clear();
                         }
 
                     }
-
                 }
-
             }
         }
     }
