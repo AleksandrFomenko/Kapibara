@@ -217,7 +217,7 @@ namespace Kapibara
 
                         foreach (Element subelem in cm.GetSubComponents(elem))
                         {
-                            cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsValueString());
+                            cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsValueString());
                             foreach (Element subelem_second in cm.GetSubComponents(subelem))
                             {
                                 cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsValueString());
@@ -233,10 +233,10 @@ namespace Kapibara
                         cm.setParameterValueByNameToElement(elem, ParameterName, par.AsString());
                         foreach (Element subelem in cm.GetSubComponents(elem))
                         {
-                            cm.setParameterValueByNameToElement(subelem, ParameterName, elem.get_Parameter(bp).AsString());
+                            cm.setParameterValueByNameToElement(subelem, ParameterName, par.AsString());
                             foreach (Element subelem_second in cm.GetSubComponents(subelem))
                             {
-                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, elem.get_Parameter(bp).AsString());
+                                cm.setParameterValueByNameToElement(subelem_second, ParameterName, par.AsString());
                             }
                         }
 

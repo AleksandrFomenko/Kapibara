@@ -33,10 +33,11 @@ namespace Kapibara
 
         public void setParameterValueByNameToElement(Element elem,string parameterName, string value)
         {
-            if (elem.LookupParameter(parameterName) != null && !elem.LookupParameter(parameterName).IsReadOnly)
-            {
-                elem.LookupParameter(parameterName).Set(value);
+            Parameter par = elem.LookupParameter(parameterName);
 
+            if (par != null && !par.IsReadOnly)
+            {
+                par.Set(value);
             }
         }
 
