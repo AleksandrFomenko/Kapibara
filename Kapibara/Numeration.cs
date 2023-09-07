@@ -22,8 +22,8 @@ namespace Kapibara
         {
             UIApplication uiApp = commandData.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
-            //UISystemName wpffForm = new UISystemName(doc);
-            //wpffForm.ShowDialog();
+            NumerarionWPF wpffForm = new NumerarionWPF(doc);
+            wpffForm.ShowDialog();
             return Result.Succeeded;
         }
     }

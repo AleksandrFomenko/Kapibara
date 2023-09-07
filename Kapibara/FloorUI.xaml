@@ -42,5 +42,6 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
+        <Grid/>
     </Grid>
 </Window>

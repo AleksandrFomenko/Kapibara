@@ -13,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Autodesk.Revit.DB;
 using Binding = Autodesk.Revit.DB.Binding;
 
 namespace Kapibara

@@ -85,6 +85,9 @@
     <Compile Include="FloorUI.xaml.cs">
       <DependentUpon>FloorUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NumerarionWPF.xaml.cs">
+      <DependentUpon>NumerarionWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WritingToParameterWPF.xaml.cs">
       <DependentUpon>WritingToParameterWPF.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="FloorUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NumerarionWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
