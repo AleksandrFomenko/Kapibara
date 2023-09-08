@@ -15,13 +15,13 @@
                 <GradientStop Color="#FFE4E3E3" Offset="0.22"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,10,10,0" CornerRadius="3,3,3,3" Background="White">
+        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,10,10,0" CornerRadius="3,3,3,3" Background="#FFCCCCCC">
             <Label Content="Выбери параметр" Height="30" VerticalAlignment="Center" HorizontalAlignment="Left" Width="378" FontSize="16" VerticalContentAlignment="Center"/>
         </Border>
         <ComboBox Margin="10,50,10,0" VerticalAlignment="Top" Height="30" SelectionChanged="Parameters_Selection" x:Name="Parameters" FontSize="14" FontFamily="Times New Roman"/>
         <Button Content="Ок" Margin="0,180,0,0" Click="Button_Click" FontSize="14" Height="35" VerticalAlignment="Top" HorizontalAlignment="Center" Width="134"/>
         <TextBox Margin="10,135,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="28" FontSize="14" TextChanged="TextBox_TextChanged"/>
-        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,92,10,0" CornerRadius="3,3,3,3" Background="White">
+        <Border BorderBrush="#FF060606" BorderThickness="1" Height="30" VerticalAlignment="Top" Margin="10,92,10,0" CornerRadius="3,3,3,3" Background="Gainsboro">
             <Label Content="Значение:" Height="30" VerticalAlignment="Center" HorizontalAlignment="Left" Width="378" FontSize="16" VerticalContentAlignment="Center"/>
         </Border>
     </Grid>
