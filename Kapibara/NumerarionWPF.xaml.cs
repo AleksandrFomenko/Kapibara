@@ -110,6 +110,7 @@ namespace Kapibara
                     result = result.Except(generalFamilyIds).ToList();
                 }
             }
+            elemOnView = elemOnView.Except(result).ToList();
             Transaction T = new Transaction(Doc);
             T.Start("Transacton set");
             foreach (ElementId elementId in result)
