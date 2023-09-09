@@ -4,11 +4,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-
-
 namespace Kapibara
 {
-   
     public partial class NumerarionWPF : Window
     {
         public NumerarionWPF(Document doc)
@@ -16,9 +13,8 @@ namespace Kapibara
             InitializeComponent();
             Doc = doc;
         }
+
         Document Doc;
-
-
         private bool updateNumbering;
         private string ParameterName;
         private List<ElementId> elemOnView;
@@ -27,13 +23,13 @@ namespace Kapibara
         {
             if (Doc.ActiveView.ViewType == ViewType.Schedule)
             {
-                
                 ViewSchedule viewSchedule = Doc.ActiveView as ViewSchedule;
                 TableData tableData = viewSchedule.GetTableData();
                 TableSectionData sectionData = tableData.GetSectionData(SectionType.Body);
                 ExecuteNumeration(sectionData);
 
-            } else
+            }
+            else
             {
                 Autodesk.Revit.UI.TaskDialog.Show("Error", "Необходимо открыть спецификацию");
             }
@@ -65,27 +61,27 @@ namespace Kapibara
                 .ToList();
             }
         }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string selectedElement = Parameters.SelectedItem.ToString();
             ParameterName = selectedElement;
         }
-        private void ExecuteNumeration(TableSectionData sectionData) {
+        private void ExecuteNumeration(TableSectionData sectionData)
+        {
             CollectionMethods cm = new CollectionMethods();
             for (int i = 0; i < sectionData.NumberOfRows; i++)
             {
                 if (sectionData.CanRemoveRow(i))
                 {
-                    elementsInRow(i, sectionData,cm);
-                } else
+                    elementsInRow(i, sectionData, cm);
+                }
+                else
                 {
                     continue;
                 }
             }
         }
-
-        private void elementsInRow (int x,TableSectionData sectionData, CollectionMethods cm)
+        private void elementsInRow(int x, TableSectionData sectionData, CollectionMethods cm)
         {
             Transaction t = new Transaction(Doc);
             t.Start("Transacton for delete");
@@ -107,20 +103,7 @@ namespace Kapibara
                     List<ElementId> generalFamilyIds = generalFamilies.Select(e => e.Id).ToList();
                     result = result.Except(generalFamilyIds).ToList();
                 }
-                /*
-                foreach (ElementId elemIdSecond in result)
-                {
-                    Element elementSecond = Doc.GetElement(elemId);
-                    if (element != null)
-                    {
-                        List<Element> generalFamiliesSecond = cm.GetSubComponents(elementSecond);
-                        List<ElementId> generalFamilyIdsSecond = generalFamiliesSecond.Select(e => e.Id).ToList();
-                        result = result.Except(generalFamilyIdsSecond).ToList();
-                    }
-                }
-                */
             }
-
             Transaction T = new Transaction(Doc);
             T.Start("Transacton set");
             foreach (ElementId elementId in result)
@@ -129,12 +112,5 @@ namespace Kapibara
             }
             T.Commit();
         }
-
-       
     }
-
-
-    
-
-        
 }
