@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -36,7 +37,7 @@ namespace Kapibara
         }
         private void WinLoaded(object sender, RoutedEventArgs e)
         {
-            ViewSchedule schedule = Doc.ActiveView as ViewSchedule; // Получите ссылку на вашу спецификацию
+            ViewSchedule schedule = Doc.ActiveView as ViewSchedule;
 
             if (schedule != null)
             {
@@ -69,29 +70,34 @@ namespace Kapibara
         private void ExecuteNumeration(TableSectionData sectionData)
         {
             CollectionMethods cm = new CollectionMethods();
-            for (int i = 0; i < sectionData.NumberOfRows; i++)
+            using (TransactionGroup transGroup = new TransactionGroup(Doc, "Kapibara - TransactionGroup"))
             {
-                if (sectionData.CanRemoveRow(i))
-                {
-                    elementsInRow(i, sectionData, cm);
-                }
-                else
-                {
-                    continue;
-                }
-            }
+                transGroup.Start();
+                    for (int i = 0; i < sectionData.NumberOfRows; i++)
+                    {
+                    if (sectionData.CanRemoveRow(i))
+                    {
+                        elementsInRow(i, sectionData, cm);
+                    }
+                    else
+                        {
+                            continue;
+                        }
+                    }
+                transGroup.Assimilate();
+            }  
         }
         private void elementsInRow(int x, TableSectionData sectionData, CollectionMethods cm)
         {
-            Transaction t = new Transaction(Doc);
-            t.Start("Transacton for delete");
-
+            Transaction tr = new Transaction(Doc);
+            tr.Start("Transacton for delete");
+ 
             sectionData.RemoveRow(x);
             List<ElementId> elemAfterDelete = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                 .WhereElementIsNotElementType()
                 .ToElementIds()
                 .ToList();
-            t.RollBack();
+            tr.RollBack();
 
             List<ElementId> result = elemOnView.Except(elemAfterDelete).ToList();
             foreach (ElementId elemId in result)
@@ -111,6 +117,7 @@ namespace Kapibara
                 Doc.GetElement(elementId).LookupParameter(ParameterName).Set(x.ToString());
             }
             T.Commit();
+
         }
     }
 }
