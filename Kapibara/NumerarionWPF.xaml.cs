@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -19,21 +20,57 @@ namespace Kapibara
         private bool updateNumbering;
         private string ParameterName;
         private List<ElementId> elemOnView;
+        private float number;
+        private string prf_text;
+        private string sfc_text;
+        private float numberFirst;
+        
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            
+
             if (Doc.ActiveView.ViewType == ViewType.Schedule)
             {
+                numberFirst = number;
                 ViewSchedule viewSchedule = Doc.ActiveView as ViewSchedule;
                 TableData tableData = viewSchedule.GetTableData();
                 TableSectionData sectionData = tableData.GetSectionData(SectionType.Body);
                 ExecuteNumeration(sectionData);
-
+                Autodesk.Revit.UI.TaskDialog.Show("Succeeded", "Успешно");
+                Close();
             }
             else
             {
                 Autodesk.Revit.UI.TaskDialog.Show("Error", "Необходимо открыть спецификацию");
             }
+        }
+        private void number_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            System.Windows.Controls.TextBox Number = (System.Windows.Controls.TextBox)sender;
+            number = float.Parse(Number.Text);
+        }
+        private void prf_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            System.Windows.Controls.TextBox prf = (System.Windows.Controls.TextBox)sender;
+            prf_text = prf.Text;
+
+        }
+
+        private void sfc_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            System.Windows.Controls.TextBox sfc = (System.Windows.Controls.TextBox)sender;
+            sfc_text = sfc.Text;
+
+        }
+        private void udpate_Checked(object sender, RoutedEventArgs e)
+        {
+            updateNumbering = true;
+        }
+        private void udpate_Unchecked(object sender, RoutedEventArgs e)
+        {
+            updateNumbering = false;
         }
         private void WinLoaded(object sender, RoutedEventArgs e)
         {
@@ -78,9 +115,14 @@ namespace Kapibara
                     if (sectionData.CanRemoveRow(i))
                     {
                         elementsInRow(i, sectionData, cm);
+                        number++;
                     }
                     else
                         {
+                        if (updateNumbering)
+                        {
+                            number = numberFirst;
+                        }
                             continue;
                         }
                     }
@@ -115,10 +157,44 @@ namespace Kapibara
             T.Start("Transacton set");
             foreach (ElementId elementId in result)
             {
-                Doc.GetElement(elementId).LookupParameter(ParameterName).Set(x.ToString());
+                setValue(Doc.GetElement(elementId));
+
             }
             T.Commit();
+        }
+        private void setValue(Element elem)
+        {
+            if (elem != null)
+            {
+                Parameter par = elem.LookupParameter(ParameterName);
+                if (par != null)
+                {
+                    if (par.Definition.ParameterType== ParameterType.Integer)
+                    {
+                        if (par !=null && par.IsReadOnly == false)
+                        {
+                            par.Set((int)(number));
+                        }
+                    } else if (par.Definition.ParameterType == ParameterType.Number)
+                    {
+                        if (par != null && par.IsReadOnly == false)
+                        {
+                            string valueAsString = number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            par.Set(float.Parse(valueAsString));
+                        }
+                    }
+                    else if (par.Definition.ParameterType == ParameterType.Text)
+                    {
+                        if (par != null && par.IsReadOnly == false)
+                        {
+                            string prfText = prf_text != null ? prf_text.ToString() : string.Empty;
+                            string sfcText = sfc_text != null ? sfc_text.ToString() : string.Empty;
 
+                            par.Set(string.Format("{0}{1}{2}", prfText, number, sfcText));
+                        }
+                    }
+                }
+            }
         }
     }
 }

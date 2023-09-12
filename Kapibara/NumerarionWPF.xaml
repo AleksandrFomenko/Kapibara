@@ -21,17 +21,17 @@
         <Button Content="ОК" Margin="0,0,0,40" Background="White" FontSize="18" HorizontalAlignment="Center" Width="100" Height="30" VerticalAlignment="Bottom" BorderThickness="1,1,1,1" BorderBrush="Black" Click="Button_Click"/>
         <Border BorderBrush="Black" BorderThickness="1" Height="33" VerticalAlignment="Top" Margin="0,95,45,0" Background="White" CornerRadius="2,2,2,2" HorizontalAlignment="Right" Width="244"/>
         <Border BorderBrush="Black" BorderThickness="1" Height="33" VerticalAlignment="Top" Margin="0,145,45,0" Background="White" CornerRadius="2,2,2,2" HorizontalAlignment="Right" Width="244">
-            <TextBox TextWrapping="Wrap" Text="1" FontSize="18"/>
+            <TextBox x:Name="Number" TextWrapping="Wrap" Text="1" FontSize="18" TextChanged="number_TextChanged"/>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Height="33" VerticalAlignment="Top" Margin="0,195,45,0" Background="White" CornerRadius="2,2,2,2" HorizontalAlignment="Right" Width="244">
-            <TextBox TextWrapping="Wrap" FontSize="18"/>
+            <TextBox x:Name="prf" TextWrapping="Wrap" FontSize="18" TextChanged="prf_TextChanged"/>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Height="33" VerticalAlignment="Top" Margin="0,245,45,0" Background="White" CornerRadius="2,2,2,2" HorizontalAlignment="Right" Width="244">
-            <TextBox TextWrapping="Wrap" FontSize="18"/>
+            <TextBox x:Name="sfc" TextWrapping="Wrap" FontSize="18" TextChanged="sfc_TextChanged"/>
         </Border>
         <ComboBox x:Name="Parameters" Margin="0,96,46,0" VerticalAlignment="Top" Height="31" HorizontalAlignment="Right" Width="242" SelectionChanged="ComboBox_SelectionChanged" FontSize="16"/>
         <Border BorderBrush="Black" BorderThickness="1" Height="33" VerticalAlignment="Top" Margin="45,295,0,0" Background="#FFCCCCCC" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="244"/>
-        <CheckBox Content="Обновлять при заголовке" Margin="50,300,322,0" VerticalAlignment="Top" FontSize="16"/>
+        <CheckBox x:Name="udpate" Content="Обновлять при заголовке" Margin="50,300,322,0" VerticalAlignment="Top" FontSize="16" Checked="udpate_Checked" Unchecked="udpate_Unchecked"/>
     </Grid>
 
 </Window>
