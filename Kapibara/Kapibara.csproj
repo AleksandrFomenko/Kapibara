@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="NumerationGeneralFamilies.cs" />
     <Compile Include="Numeration.cs" />
     <Compile Include="Floor.cs" />
     <Compile Include="FloorUI.xaml.cs">
@@ -87,6 +88,9 @@
     </Compile>
     <Compile Include="NumerarionWPF.xaml.cs">
       <DependentUpon>NumerarionWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NumerationGeneralFamiliesWPF.xaml.cs">
+      <DependentUpon>NumerationGeneralFamiliesWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="WritingToParameterWPF.xaml.cs">
       <DependentUpon>WritingToParameterWPF.xaml</DependentUpon>
@@ -110,6 +114,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NumerarionWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NumerationGeneralFamiliesWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -63,21 +63,27 @@ namespace Kapibara
             PushButtonData pbdThree = new PushButtonData("ThidButton", "Тётя Лена", assemblyPath, "Kapibara.WritingToParameter");
             PushButtonData pbdTFour = new PushButtonData("FourthButton", "Этаж", assemblyPath, "Kapibara.Floor");
             PushButtonData pbdTFive = new PushButtonData("FiveButton", "Нумерация", assemblyPath, "Kapibara.Numeration");
-            PushButtonData pbdTSix = new PushButtonData("SixButton", "Сортировка", assemblyPath, "Kapibara.Numeration");
+            PushButtonData pbdTSix = new PushButtonData("SixButton", "Сортировка", assemblyPath, "Kapibara.NumerationGeneralFamilies");
 
 
             Uri uri = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib.png"));
             Uri uri1 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_length.png"));
             Uri uri2 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_write.png"));
             Uri uri3 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_floor.png"));
+            Uri uri4 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_numeration.png"));
+            Uri uri5 = new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Kapibara", "kapib_sorted.png"));
             BitmapImage bm_first = new BitmapImage(uri);
             BitmapImage bm_second = new BitmapImage(uri1);
             BitmapImage bm_Third = new BitmapImage(uri2);
             BitmapImage bm_fourth = new BitmapImage(uri3);
+            BitmapImage bm_five = new BitmapImage(uri4);
+            BitmapImage bm_six = new BitmapImage(uri5);
             pbdOne.LargeImage = bm_first;
             pbdTwo.LargeImage = bm_second;
             pbdThree.LargeImage = bm_Third;
             pbdTFour.LargeImage = bm_fourth;
+            pbdTFive.LargeImage = bm_five;
+            pbdTSix.LargeImage = bm_six;
             panel.AddItem(pbdOne);
             panel.AddItem(pbdTwo);
             panel.AddItem(pbdThree);
@@ -88,11 +94,8 @@ namespace Kapibara
            PushButton name1 = sbOne.AddPushButton(pbdTFive);
            PushButton name2 = sbOne.AddPushButton(pbdTSix);
            sbOne.AddSeparator();
-
-            return Result.Succeeded;
-         
+           return Result.Succeeded;
         }
-  
     }
 }
 
