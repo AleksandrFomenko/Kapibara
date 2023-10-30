@@ -126,6 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="Class2.cs" />
     <Compile Include="NumerationGeneralFamilies.cs" />
     <Compile Include="Numeration.cs" />
     <Compile Include="Floor.cs" />
@@ -245,7 +247,7 @@
         </Reference>
       </ItemGroup>
     </When>
-	<When Condition=" '$(Configuration)'=='R2023' ">
+    <When Condition=" '$(Configuration)'=='R2023' ">
       <ItemGroup>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
