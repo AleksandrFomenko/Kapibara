@@ -30,12 +30,12 @@ public class PipeUpdater : IUpdater
 
                     using (Transaction trans = new Transaction(doc, "Update Pipe Parameter"))
                     {
-                        trans.Start();
+                        //trans.Start();
                         Parameter parameter = pipe.LookupParameter("тест");
                         
                         parameter.Set("Значение_параметра");
                         
-                        trans.Commit();
+                        //trans.Commit();
                     }
                 }
             }
@@ -63,7 +63,7 @@ public class PipeUpdater : IUpdater
 
     public string GetUpdaterName()
     {
-        return "ElevationWatcherUpdater";
+        return "PipeUpdater";
     }
 
 }

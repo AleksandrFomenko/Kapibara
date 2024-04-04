@@ -126,7 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="PipeUpdater.cs" />
     <Compile Include="Class2.cs" />
     <Compile Include="NumerationGeneralFamilies.cs" />
     <Compile Include="Numeration.cs" />

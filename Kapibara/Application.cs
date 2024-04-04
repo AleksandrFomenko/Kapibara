@@ -13,7 +13,8 @@ using System.Windows.Media;
 using adWin = Autodesk.Windows;
 using System.Windows.Media;
 using System.Reflection;
-
+using System.Security.AccessControl;
+using Autodesk.Revit.DB.Plumbing;
 
 namespace Kapibara
 {
@@ -28,8 +29,10 @@ namespace Kapibara
         public Result OnStartup(UIControlledApplication application)
         {
             string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            qwe(application);
 
-             application.CreateRibbonTab("Kapibarja");
+
+            application.CreateRibbonTab("Kapibarja");
             
 
             RibbonPanel panel = application.CreateRibbonPanel("Kapibarja","MEP общие");
@@ -96,6 +99,25 @@ namespace Kapibara
            sbOne.AddSeparator();
            return Result.Succeeded;
         }
+    private void qwe(UIControlledApplication application)
+        {
+
+            try
+                {
+                    PipeUpdater pipeUpdater = new PipeUpdater(application.ActiveAddInId);
+
+                    UpdaterRegistry.RegisterUpdater(pipeUpdater);
+
+                    ElementClassFilter pipeFilter = new ElementClassFilter(typeof(Pipe));
+                    UpdaterRegistry.AddTrigger(pipeUpdater.GetUpdaterId(), pipeFilter, Element.GetChangeTypeElementAddition());
+
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("ошибка", "ошибка " + ex.Message);
+                }
+        }
+        
     }
 }
 
